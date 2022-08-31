@@ -1,120 +1,120 @@
 package jasypt;
 
+import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
-import javax.crypto.spec.SecretKeySpec;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.security.interfaces.RSAPrivateKey;
-import java.security.interfaces.RSAPublicKey;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import java.io.UnsupportedEncodingException;
+import java.security.*;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.X509EncodedKeySpec;
+import java.util.Base64;
 
 public class EncryptUtil {
 
-    public static void main(String[] args) {
-        /*
-            1. 암호화 유틸 사용
-            2. 파라미터는 각각 메세지, 암호화 타입, key이다.
-                2.1. key는 AES를 사용할떄만 사용하고 반드시 16, 24, 32비트여야만 한다.
-                2.2. 유효하지 않은 암호화 알고리즘 명이 들어갔을 경우 "해당하는 암호화 알고리즘이 없습니다"라는 값을 반환한다.
+    //--------------------RSA 시작--------------------
+    /**
+     * 1024비트 RSA 키쌍을 생성합니다.
+     * 아래와 같이 난수를 돌리지 않고 쭉 동일한 키쌍을 사용할수도 있습니다.
+     *         KeyPairGenerator keypairgen = KeyPairGenerator.getInstance("RSA");
+     *         KeyPair keyPair = keypairgen.generateKeyPair();
+     *         RSAPrivateKey privateKey = (RSAPrivateKey) keyPair.getPrivate();
+     *         RSAPublicKey publicKey = (RSAPublicKey) keyPair.getPublic();
+     */
+    public static KeyPair genRSAKeyPair() throws NoSuchAlgorithmException {
 
-        */
-        String RSATest = encrypt("하하", "RSA", "happyprogrammer!");
-        System.out.println(RSATest);
+        SecureRandom secureRandom = new SecureRandom();
+        KeyPairGenerator gen;
+        gen = KeyPairGenerator.getInstance("RSA");
+        gen.initialize(1024, secureRandom);
+        KeyPair keyPair = gen.genKeyPair();
+        return keyPair;
     }
 
-    public static String encrpty(String message, String algorithm) {
-        return encrypt(message, algorithm, "");
+    /**
+     * Public Key로 RSA 암호화를 수행합니다.
+     * @param plainText 암호화할 평문입니다.
+     * @param publicKey 공개키 입니다.
+     * @return
+     */
+    public static String encryptRSA(String plainText, PublicKey publicKey)
+            throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException,
+            BadPaddingException, IllegalBlockSizeException {
+
+        Cipher cipher = Cipher.getInstance("RSA");
+        cipher.init(Cipher.ENCRYPT_MODE, publicKey);
+        byte[] bytePlain = cipher.doFinal(plainText.getBytes());
+        String encrypted = Base64.getEncoder().encodeToString(bytePlain);
+        return encrypted;
     }
 
+    /**
+     * Private Key로 RAS 복호화를 수행합니다.
+     *
+     * @param encrypted 암호화된 이진데이터를 base64 인코딩한 문자열 입니다.
+     * @param privateKey 복호화를 위한 개인키 입니다.
+     * @return
+     * @throws Exception
+     */
+    public static String decryptRSA(String encrypted, PrivateKey privateKey)
+            throws NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException,
+            BadPaddingException, IllegalBlockSizeException, UnsupportedEncodingException {
 
-
-    public static String encrypt(String message, String algorithm, String key) {
-
-        if (algorithm.equalsIgnoreCase("MD5")) {
-            String MD5 = "";
-
-            try {
-
-                MessageDigest md = MessageDigest.getInstance(algorithm);
-
-                md.update(message.getBytes());
-
-                byte byteData[] = md.digest();
-
-                StringBuffer sb = new StringBuffer();
-
-                for (int i = 0; i < byteData.length; i++) {
-                    sb.append(Integer.toString((byteData[i] & 0xff) + 0x100, 16).substring(1));
-                }
-                MD5 = sb.toString();
-            } catch (NoSuchAlgorithmException e) {
-                e.printStackTrace();
-                MD5 = null;
-            }
-            return MD5;
-
-        } else if (algorithm.equalsIgnoreCase("AES")) {
-            try {
-                // AES로 암호화
-
-                // AES Cipher 객체 생성
-                Cipher cipher = Cipher.getInstance(algorithm);
-
-                // 암호화 Chipher 초기화
-                SecretKeySpec secretKeySpec = new SecretKeySpec(key.getBytes(), algorithm);
-                cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec);
-
-                // 암호화 완료
-                byte[] encryptBytes = cipher.doFinal(message.getBytes("UTF-8"));
-                //System.out.println(new String(encryptBytes)); // => 똑같은 암호화키로 복호화
-
-
-                //AES 복호화
-                //복호화 Chipher 초기화, 똑같은 암호화키로 복호화
-                //cipher.init(cipher.DECRYPT_MODE, secretKeySpec);
-                //byte[] decryptBytes = cipher.doFinal(encryptBytes);
-                //System.out.println(new String(decryptBytes, "UTF-8"));
-
-                return new String(encryptBytes, "UTF-8");
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }  else if (algorithm.equalsIgnoreCase("RSA")) {
-
-            // RSA 암호화
-            // RSA 비밀키와 공개키를 생성
-            try {
-                KeyPairGenerator keypairgen = KeyPairGenerator.getInstance(algorithm);
-                KeyPair keyPair = keypairgen.generateKeyPair();
-                RSAPrivateKey privateKey = (RSAPrivateKey) keyPair.getPrivate();
-                RSAPublicKey publicKey = (RSAPublicKey) keyPair.getPublic();
-
-                // Cipher 객체 생성과 비밀키 초기화
-                Cipher cipher = Cipher.getInstance(algorithm);
-                cipher.init(Cipher.ENCRYPT_MODE, privateKey);
-
-                // 암호화 완료
-                byte[] encryptBytes = cipher.doFinal(message.getBytes());
-                //System.out.println(new String(encryptBytes)); // => 암호화되어 읽지못함
-
-                // RSA로 복호화
-
-                // 복호화 Chipher 초기화, 비밀키와 쌍인 공개키로 복호화함.
-                //cipher.init(cipher.DECRYPT_MODE, publicKey);
-                //byte[] decryptBytes = cipher.doFinal(encryptBytes);
-                //System.out.println(new String(decryptBytes));
-
-                return new String(encryptBytes);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-        }
-
-        return "해당하는 암호화 알고리즘이 없습니다";
-
-
+        Cipher cipher = Cipher.getInstance("RSA");
+        byte[] byteEncrypted = Base64.getDecoder().decode(encrypted.getBytes());
+        cipher.init(Cipher.DECRYPT_MODE, privateKey);
+        byte[] bytePlain = cipher.doFinal(byteEncrypted);
+        String decrypted = new String(bytePlain, "utf-8");
+        return decrypted;
     }
+
+    /**
+     * Base64 엔코딩된 개인키 문자열로부터 PrivateKey객체를 얻는다.
+     * @param keyString
+     * @return
+     * @throws NoSuchAlgorithmException
+     * @throws InvalidKeySpecException
+     */
+    public static PrivateKey getPrivateKeyFromBase64String(final String keyString)
+            throws NoSuchAlgorithmException, InvalidKeySpecException {
+
+        final String privateKeyString =
+                keyString.replaceAll("\\n",  "").replaceAll("-{5}[ a-zA-Z]*-{5}", "");
+
+        KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+
+        PKCS8EncodedKeySpec keySpecPKCS8 =
+                new PKCS8EncodedKeySpec(Base64.getDecoder().decode(privateKeyString));
+
+        return keyFactory.generatePrivate(keySpecPKCS8);
+    }
+
+    /**
+     * Base64 엔코딩된 공용키키 문자열로부터 PublicKey객체를 얻는다.
+     * @param keyString
+     * @return
+     * @throws NoSuchAlgorithmException
+     * @throws InvalidKeySpecException
+     */
+    public static PublicKey getPublicKeyFromBase64String(final String keyString)
+            throws NoSuchAlgorithmException, InvalidKeySpecException {
+
+        final String publicKeyString =
+                keyString.replaceAll("\\n",  "").replaceAll("-{5}[ a-zA-Z]*-{5}", "");
+
+        KeyFactory keyFactory = KeyFactory.getInstance("RSA");
+
+        X509EncodedKeySpec keySpecX509 =
+                new X509EncodedKeySpec(Base64.getDecoder().decode(publicKeyString));
+
+        return keyFactory.generatePublic(keySpecX509);
+    }
+
+    //--------------------RSA 끝--------------------
+
+
+
+
+
 }
