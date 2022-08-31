@@ -1,17 +1,0 @@
-
-k	java:S117"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ïê¡¸ÿÿÿÿÿ
-u
-java:S1149'"_Replace the synchronized class "StringBuffer" by an unsynchronized one such as "StringBuilder".(í…Ò‰
-S	java:S106"9Replace this use of System.out or System.err by a logger.(ì­øúÿÿÿÿ
-_
-java:S1854W"=Remove this useless assignment to local variable "publicKey".(ğû˜Şşÿÿÿÿ8ø§† ¬0
-?
-java:S1197%"*Move the array designators [] to the type.(Öÿ·|
-V
-java:S4719?"9Replace charset name argument with StandardCharsets.UTF_8(¼›µï8òÍ¼Ÿ¬0
-]	java:S125E"<This block of commented-out lines of code should be removed.(‘ïÉøÿÿÿÿ8ú«÷Ÿ¬0
-V
-java:S4719I"9Replace charset name argument with StandardCharsets.UTF_8(Ç«ºá8õÍ¼Ÿ¬0
-P
-java:S1481W".Remove this unused "publicKey" local variable.(ğû˜Şşÿÿÿÿ8ş§† ¬0
-]	java:S125d"<This block of commented-out lines of code should be removed.(¦İ²üúÿÿÿÿ8ÿ§† ¬0

@@ -19,18 +19,24 @@ public class EncryptUtil {
                 2.2. 유효하지 않은 암호화 알고리즘 명이 들어갔을 경우 "해당하는 암호화 알고리즘이 없습니다"라는 값을 반환한다.
 
         */
-        String temp = encrypt("하하", "RSA", "happyprogrammer!");
-        System.out.println(temp);
+        String RSATest = encrypt("하하", "RSA", "happyprogrammer!");
+        System.out.println(RSATest);
     }
 
-    public static String encrypt(String message, String type, String key) {
+    public static String encrpty(String message, String algorithm) {
+        return encrypt(message, algorithm, "");
+    }
 
-        if (type.equalsIgnoreCase("MD5")) {
+
+
+    public static String encrypt(String message, String algorithm, String key) {
+
+        if (algorithm.equalsIgnoreCase("MD5")) {
             String MD5 = "";
 
             try {
 
-                MessageDigest md = MessageDigest.getInstance(type);
+                MessageDigest md = MessageDigest.getInstance(algorithm);
 
                 md.update(message.getBytes());
 
@@ -48,15 +54,15 @@ public class EncryptUtil {
             }
             return MD5;
 
-        } else if (type.equalsIgnoreCase("AES")) {
+        } else if (algorithm.equalsIgnoreCase("AES")) {
             try {
                 // AES로 암호화
 
                 // AES Cipher 객체 생성
-                Cipher cipher = Cipher.getInstance(type);
+                Cipher cipher = Cipher.getInstance(algorithm);
 
                 // 암호화 Chipher 초기화
-                SecretKeySpec secretKeySpec = new SecretKeySpec(key.getBytes(),type);
+                SecretKeySpec secretKeySpec = new SecretKeySpec(key.getBytes(), algorithm);
                 cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec);
 
                 // 암호화 완료
@@ -64,8 +70,8 @@ public class EncryptUtil {
                 //System.out.println(new String(encryptBytes)); // => 똑같은 암호화키로 복호화
 
 
-                // AES 복호화
-                // 복호화 Chipher 초기화, 똑같은 암호화키로 복호화
+                //AES 복호화
+                //복호화 Chipher 초기화, 똑같은 암호화키로 복호화
                 //cipher.init(cipher.DECRYPT_MODE, secretKeySpec);
                 //byte[] decryptBytes = cipher.doFinal(encryptBytes);
                 //System.out.println(new String(decryptBytes, "UTF-8"));
@@ -75,26 +81,25 @@ public class EncryptUtil {
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        }  else if (type.equalsIgnoreCase("rsa")) {
+        }  else if (algorithm.equalsIgnoreCase("RSA")) {
 
             // RSA 암호화
-
             // RSA 비밀키와 공개키를 생성
             try {
-                KeyPairGenerator keypairgen = KeyPairGenerator.getInstance(type);
+                KeyPairGenerator keypairgen = KeyPairGenerator.getInstance(algorithm);
                 KeyPair keyPair = keypairgen.generateKeyPair();
                 RSAPrivateKey privateKey = (RSAPrivateKey) keyPair.getPrivate();
                 RSAPublicKey publicKey = (RSAPublicKey) keyPair.getPublic();
 
                 // Cipher 객체 생성과 비밀키 초기화
-                Cipher cipher = Cipher.getInstance(type);
+                Cipher cipher = Cipher.getInstance(algorithm);
                 cipher.init(Cipher.ENCRYPT_MODE, privateKey);
 
                 // 암호화 완료
                 byte[] encryptBytes = cipher.doFinal(message.getBytes());
                 //System.out.println(new String(encryptBytes)); // => 암호화되어 읽지못함
 
-                // RSA로 복호화 =================================================
+                // RSA로 복호화
 
                 // 복호화 Chipher 초기화, 비밀키와 쌍인 공개키로 복호화함.
                 //cipher.init(cipher.DECRYPT_MODE, publicKey);
