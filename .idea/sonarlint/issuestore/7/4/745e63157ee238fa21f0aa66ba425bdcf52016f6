@@ -1,0 +1,11 @@
+
+>
+java:S5542"#Use secure mode and padding scheme.(÷ÈÝÿøÿÿÿÿ
+N
+java:S4719"9Replace charset name argument with StandardCharsets.UTF_8(Îù¸y
+N	java:S106"9Replace this use of System.out or System.err by a logger.(Öý­ß
+P
+java:S2209!"5Change this instance-reference to a static reference.(ŸÙÒæúÿÿÿÿ
+N	java:S106#"9Replace this use of System.out or System.err by a logger.(Î–Þ×
+O
+java:S4719#"9Replace charset name argument with StandardCharsets.UTF_8(Î–Þ×
