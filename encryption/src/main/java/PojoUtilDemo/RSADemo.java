@@ -8,7 +8,7 @@ public class RSADemo {
     public static void main(String[] args) throws Exception {
 
         //Key를 얻는다
-        KeyPair keyPair = genRSAKeyPair();
+        KeyPair keyPair = getRSAKeyPair();
 
         String message = "암호화 할 메세지입니다.";
         String isEncryptMessage = encryptRSA(message, keyPair.getPublic());

@@ -1,18 +1,18 @@
 package PojoJavaUtil;
 
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Component;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
+import javax.crypto.*;
+import javax.crypto.spec.DESKeySpec;
+import javax.crypto.spec.PBEKeySpec;
+import javax.crypto.spec.PBEParameterSpec;
 import java.io.UnsupportedEncodingException;
 import java.security.*;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.PKCS8EncodedKeySpec;
-import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
+import java.util.Random;
+
+import static org.apache.tomcat.util.codec.binary.Base64.encodeBase64String;
+
 
 @Component
 public class EncryptUtil {
@@ -21,7 +21,7 @@ public class EncryptUtil {
     /**
      * 1024비트 RSA 키쌍을 생성합니다.
      */
-    public static KeyPair genRSAKeyPair() throws NoSuchAlgorithmException {
+    public static KeyPair getRSAKeyPair() throws NoSuchAlgorithmException {
 
         SecureRandom secureRandom = new SecureRandom();
         KeyPairGenerator gen;
@@ -67,7 +67,7 @@ public class EncryptUtil {
         String decrypted = new String(bytePlain, "utf-8");
         return decrypted;
     }
-    
+
     //--------------------MD5--------------------
     public static String decryptMD5(String message) {
         String MD5 = "";
@@ -88,6 +88,7 @@ public class EncryptUtil {
         }
     }
 
+    //--------------------SHA256--------------------
     public static String decryptSHA256(String message) throws NoSuchAlgorithmException {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
@@ -102,8 +103,104 @@ public class EncryptUtil {
             e.printStackTrace();
             return null;
         }
+    }
+
+    //--------------------DES--------------------
+    public static Key getKey() throws Exception {
+
+        try {
+
+            DESKeySpec desKeySpec = new DESKeySpec("64bit-key".getBytes());
+            SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("DES");
+            Key key = keyFactory.generateSecret(desKeySpec);
+
+            return key;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
 
     }
+
+    public static String decryptDES(Key key, String message) throws Exception {
+
+        try {
+            Cipher cipher = Cipher.getInstance("DES");
+            cipher.init(1, key);
+            return cipher.doFinal(message.getBytes()).toString();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+
+    }
+
+    public static String decryptPBE(String message) throws Exception {
+
+        try {
+            char[] password = "DESTest".toCharArray();
+
+            // 1. salt를 8byte 랜덤 생성
+            byte[] salt = new byte[8];
+            Random random = new Random();
+            random.nextBytes(salt);
+
+            // 2. 패스워드를 이용하여 PBEKeySpec 생성  
+            PBEKeySpec keySpec = new PBEKeySpec(password);
+            SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("PBEWithHmacSHA256AndAES_128");
+
+            // 3. 비밀키 생성  
+            SecretKey key = keyFactory.generateSecret(keySpec);
+
+            // 4. salt, iteration count를 위한 PBEParameterSpec 생성
+            PBEParameterSpec paramSpec = new PBEParameterSpec(salt, 1000);
+
+            // 5. Cipher 생성 및 초기화
+            Cipher cipher = Cipher.getInstance("PBEWithHmacSHA256AndAES_128");
+            cipher.init(Cipher.ENCRYPT_MODE, key, paramSpec);
+
+            // 6. 암호문 생성
+            byte[] ciphertext = cipher.doFinal(message.getBytes());
+
+            // 7. salt와 암호문을 Base64 인코딩 후 결합하여 최종 결과물 생성
+
+            String saltString = java.util.Base64.getEncoder().encodeToString(salt);
+            String ciphertextString = java.util.Base64.getEncoder().encodeToString(ciphertext);
+            return saltString + ciphertextString;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+
+
+
+    }
+
+//    public static String decryptPBE2(String message, String password) throws Exception {
+//        final int ITERATIONCOUNT = 100;
+//
+//        SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("PBEWithShAAndTwoFish-CBC");
+//        PBEKeySpec keySpec = new PBEKeySpec(password.toCharArray());
+//        SecretKey secretKey = keyFactory.generateSecret(keySpec);
+//
+//        SecureRandom random = new SecureRandom();
+//        Key key = secretKey;
+//        byte[] salt = random.generateSeed(8);
+//
+//        String saltStr = java.util.Base64.getEncoder().encodeToString(salt);
+//
+//        //  PBE
+//        PBEParameterSpec parameterSpec = new PBEParameterSpec(salt,ITERATIONCOUNT);
+//        //
+//        Cipher cipher = Cipher.getInstance("PBEWithShAAndTwoFish-CBC");
+//        //cipher            ，     ("          ","  ","  ")
+//        cipher.init(Cipher.ENCRYPT_MODE, key, parameterSpec);
+//        //
+//        byte encipheredData[] = cipher.doFinal(message.getBytes("UTF-8"));
+//
+//        return java.util.Base64.getEncoder().encodeToString(encipheredData);
+//    }
 
 
 
