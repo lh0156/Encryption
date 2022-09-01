@@ -1,4 +1,4 @@
-package jasypt;
+package PojoJavaUtil;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;

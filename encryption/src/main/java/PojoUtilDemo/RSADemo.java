@@ -1,4 +1,4 @@
-package jasypt;
+package PojoUtilDemo;
 
 import java.security.*;
 import java.util.Base64;
