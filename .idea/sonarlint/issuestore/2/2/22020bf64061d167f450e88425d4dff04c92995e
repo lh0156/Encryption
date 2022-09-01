@@ -1,0 +1,41 @@
+
+`	java:S112k"FDefine and throw a dedicated exception instead of using a generic one.(½¹çºøÿÿÿÿ
+[	java:S112{"FDefine and throw a dedicated exception instead of using a generic one.(ıöÇ¿
+h	java:S112‰"FDefine and throw a dedicated exception instead of using a generic one.(ŒŠçõşÿÿÿÿ8×å»¯0
+k	java:S117G"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ïê¡¸ÿÿÿÿÿ
+t
+java:S1488"_Immediately return this expression instead of assigning it to the temporary variable "keyPair".(úøøX
+w
+java:S1488-"aImmediately return this expression instead of assigning it to the temporary variable "encrypted".(šøş
+|
+java:S1488A"aImmediately return this expression instead of assigning it to the temporary variable "decrypted".(¯ƒÎªşÿÿÿÿ
+q
+java:S1488q"[Immediately return this expression instead of assigning it to the temporary variable "key".(Öí›©
+t	java:S120"ZRename this package name to match the regular expression '^[a-z_]+(\.[a-z_][a-z0-9_]*)*$'.(ş„Ê¶ùÿÿÿÿ
+u
+java:S1149N"_Replace the synchronized class "StringBuffer" by an unsynchronized one such as "StringBuilder".(í…Ò‰
+U
+java:S1118":Add a private constructor to hide the implicit public one.(ˆĞ’Õıÿÿÿÿ
+V
+java:S4426"@Use a key length of at least 2048 bits for RSA cipher algorithm.(Ï‹ô¨
+>
+java:S5542*"#Use secure mode and padding scheme.(»¦µªúÿÿÿÿ
+>
+java:S5542="#Use secure mode and padding scheme.(»¦µªúÿÿÿÿ
+T
+java:S4719A"9Replace charset name argument with StandardCharsets.UTF_8(¯ƒÎªşÿÿÿÿ
+C
+java:S1481G"(Remove this unused "MD5" local variable.(ïê¡¸ÿÿÿÿÿ
+?
+java:S1197L"*Move the array designators [] to the type.(Öÿ·|
+9
+java:S5542~"#Use secure mode and padding scheme.(°‘€­
+4
+java:S5547~"Use a strong cipher algorithm.(°‘€­
+A
+java:S2116€"%Use "Arrays.toString(array)" instead.(ô…æ¿şÿÿÿÿ
+4
+java:S2119"Save and re-use this "Random".(¼İÅf
+?
+java:S5542"#Use secure mode and padding scheme.(ÔøòÑÿÿÿÿÿ
+Y	java:S125²"<This block of commented-out lines of code should be removed.(äº…ä8½Ç»¯0

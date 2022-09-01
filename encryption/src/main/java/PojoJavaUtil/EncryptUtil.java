@@ -11,8 +11,6 @@ import java.security.*;
 import java.util.Base64;
 import java.util.Random;
 
-import static org.apache.tomcat.util.codec.binary.Base64.encodeBase64String;
-
 
 @Component
 public class EncryptUtil {
