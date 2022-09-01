@@ -67,49 +67,7 @@ public class EncryptUtil {
         String decrypted = new String(bytePlain, "utf-8");
         return decrypted;
     }
-
-    /**
-     * Base64 엔코딩된 개인키 문자열로부터 PrivateKey객체를 얻는다.
-     * @param keyString
-     * @return
-     * @throws NoSuchAlgorithmException
-     * @throws InvalidKeySpecException
-     */
-    public static PrivateKey getPrivateKeyFromBase64String(final String keyString)
-            throws NoSuchAlgorithmException, InvalidKeySpecException {
-
-        final String privateKeyString =
-                keyString.replaceAll("\\n",  "").replaceAll("-{5}[ a-zA-Z]*-{5}", "");
-
-        KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-
-        PKCS8EncodedKeySpec keySpecPKCS8 =
-                new PKCS8EncodedKeySpec(Base64.getDecoder().decode(privateKeyString));
-
-        return keyFactory.generatePrivate(keySpecPKCS8);
-    }
-
-    /**
-     * Base64 엔코딩된 공용키키 문자열로부터 PublicKey객체를 얻는다.
-     * @param keyString
-     * @return
-     * @throws NoSuchAlgorithmException
-     * @throws InvalidKeySpecException
-     */
-    public static PublicKey getPublicKeyFromBase64String(final String keyString)
-            throws NoSuchAlgorithmException, InvalidKeySpecException {
-
-        final String publicKeyString =
-                keyString.replaceAll("\\n",  "").replaceAll("-{5}[ a-zA-Z]*-{5}", "");
-
-        KeyFactory keyFactory = KeyFactory.getInstance("RSA");
-
-        X509EncodedKeySpec keySpecX509 =
-                new X509EncodedKeySpec(Base64.getDecoder().decode(publicKeyString));
-
-        return keyFactory.generatePublic(keySpecX509);
-    }
-
+    
     //--------------------MD5--------------------
     public static String decryptMD5(String message) {
         String MD5 = "";
