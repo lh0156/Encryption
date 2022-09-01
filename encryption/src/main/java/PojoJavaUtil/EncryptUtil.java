@@ -1,5 +1,8 @@
 package PojoJavaUtil;
 
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.stereotype.Component;
+
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -11,16 +14,12 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 
+@Component
 public class EncryptUtil {
 
     //--------------------RSA 시작--------------------
     /**
      * 1024비트 RSA 키쌍을 생성합니다.
-     * 아래와 같이 난수를 돌리지 않고 쭉 동일한 키쌍을 사용할수도 있습니다.
-     *         KeyPairGenerator keypairgen = KeyPairGenerator.getInstance("RSA");
-     *         KeyPair keyPair = keypairgen.generateKeyPair();
-     *         RSAPrivateKey privateKey = (RSAPrivateKey) keyPair.getPrivate();
-     *         RSAPublicKey publicKey = (RSAPublicKey) keyPair.getPublic();
      */
     public static KeyPair genRSAKeyPair() throws NoSuchAlgorithmException {
 
@@ -111,31 +110,41 @@ public class EncryptUtil {
         return keyFactory.generatePublic(keySpecX509);
     }
 
-    //--------------------RSA 끝--------------------
-
-
+    //--------------------MD5--------------------
     public static String decryptMD5(String message) {
         String MD5 = "";
-
         try {
 
             MessageDigest md = MessageDigest.getInstance("md5");
-
             md.update(message.getBytes());
-
             byte byteData[] = md.digest();
 
             StringBuffer sb = new StringBuffer();
-
             for (int i = 0; i < byteData.length; i++) {
                 sb.append(Integer.toString((byteData[i] & 0xff) + 0x100, 16).substring(1));
             }
-            MD5 = sb.toString();
+            return sb.toString();
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
-            MD5 = null;
+            return null;
         }
-        return MD5;
+    }
+
+    public static String decryptSHA256(String message) throws NoSuchAlgorithmException {
+        try {
+            MessageDigest md = MessageDigest.getInstance("SHA-256");
+            md.update(message.getBytes());
+
+            StringBuilder sb = new StringBuilder();
+            for (byte b : md.digest()) {
+                sb.append(String.format("%02x", b));
+            }
+            return sb.toString();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            return null;
+        }
+
     }
 
 

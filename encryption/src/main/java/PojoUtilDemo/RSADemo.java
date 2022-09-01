@@ -1,21 +1,22 @@
 package PojoUtilDemo;
 
 import java.security.*;
-import java.util.Base64;
 
-import static java.lang.System.*;
+import static PojoJavaUtil.EncryptUtil.*;
 
 public class RSADemo {
     public static void main(String[] args) throws Exception {
 
-        SecureRandom secureRandom = new SecureRandom();
-        KeyPairGenerator gen;
-        gen = KeyPairGenerator.getInstance("RSA");
-        gen.initialize(2048, secureRandom);
-        KeyPair keyPair = gen.genKeyPair();
+        //Key를 얻는다
+        KeyPair keyPair = genRSAKeyPair();
 
-        PrivateKey privateKey = keyPair.getPrivate();
-        out.println(privateKey);
+        String message = "암호화 할 메세지입니다.";
+        String isEncryptMessage = encryptRSA(message, keyPair.getPublic());
+        String isDecryptMessage = decryptRSA(isEncryptMessage, keyPair.getPrivate());
+
+        System.out.println("암호화 전 메세지: " + message);
+        System.out.println("암호화 후 메세지: " + isEncryptMessage);
+        System.out.println("복호화 후 메세지: " + isDecryptMessage);
 
 
     }
